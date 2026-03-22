@@ -74,10 +74,20 @@ int main(void)
 //-------------------------------------------functions-----------------------------------------------------------------
 void printSummary(double gross_salary, double sv_amount, double lst_amount)
 {
+  if(sv_amount > 0.00)
+  {
+    sv_amount = sv_amount * (-1);
+  }
+
+  if(lst_amount >= 0.00)
+  {
+    lst_amount = lst_amount * (-1); 
+  }
+
   printf("Gross:\t\t%12.2f\n", gross_salary);
   printf("SV:\t\t%14.2f\n", sv_amount);
   printf("LSt:\t\t%14.2f\n", lst_amount);
-  printf("Net:\t\t%14.2f\n", (gross_salary - sv_amount - lst_amount));
+  printf("Net:\t\t%14.2f\n", (gross_salary + sv_amount + lst_amount));
 }
 
 double calculationWithFamilyBonus(double lst_amount)
@@ -96,51 +106,57 @@ double calculationWithFamilyBonus(double lst_amount)
 
 bool checkFamilyBonus(void)
 {
-  char input; 
+  char input[INPUT_BUFFER_LIMIT]; 
 
   while(1)
-  {  
+  { 
     printFamilyBonusQuestion();
-    int amount_of_converted_input = scanf("%c", &input); 
-    printf("\n%d\n", amount_of_converted_input); 
+    fgets(input, INPUT_BUFFER_LIMIT, stdin); 
 
-    if(amount_of_converted_input != 1)
+    if(strchr(input, '\n') == NULL)
     {
-      int lost_integer; 
-      
-      while((lost_integer = getchar()) != EOF && lost_integer != '\n')
+      int lost_input; 
+      while((lost_input = getchar()) != '\n' && lost_input != EOF)
       {
-        continue; 
-      }
+        continue;
+      } 
 
       printf("%s", INVALID_INPUT_MESSAGE);
-      continue;
+      continue; 
     }
 
-    switch (input)
+   if(strlen(input) == 2)
     {
-    case 'y':
-      return true; 
-      break;
-    case 'Y':
-      return true;
-      break; 
-    case 'n':
-      return false; 
-      break;
-    case 'N':
-      return false;
-      break;
-    default:
-      printf("%s", INVALID_INPUT_MESSAGE); 
-      break;
+      switch (input[0])
+      {
+        case 'y':
+          return true;
+          break;
+        case 'Y':
+          return true; 
+          break;
+        case 'n':
+          return false;
+          break;
+        case 'N':
+          return false;
+          break;
+        default:
+          printf("%s", INVALID_INPUT_MESSAGE);
+          continue;
+      }
+    }
+    else 
+    {
+      printf("%s", INVALID_INPUT_MESSAGE);
+      continue;
     }
   }
 }
 
 void printFamilyBonusQuestion(void)
 {
-  printf("Children is household?: \n > "); 
+  printf("Children in household?: \n > "); 
   fflush(stdout); 
 }
 
